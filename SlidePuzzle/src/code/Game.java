@@ -1,10 +1,17 @@
 package code;
 
+import java.util.ArrayList;
+
+import view.GUI;
+
 public class Game {
 	private State _currentState;
+	private GUI _gui;
 	
-	public Game(){
-		_currentState = new State(3);
+	
+	public Game(GUI g){
+		_gui = g;
+		_currentState = State.generateRandomState(3);
 	}
 	public int getSize(){
 		return _currentState.getSize();
@@ -75,11 +82,23 @@ public class Game {
 				moveUp();
 			}
 		}
-		
-		
-		
-		
-		
-		
+	}
+	
+	public State getGoal(){
+		State s = new State(getSize());
+		return s;
+	}
+	
+	
+	
+	public void solve() {
+		ArrayList<State> steps = Solver.BFSSolve(_currentState, getGoal());
+		for(State s: steps){
+			_currentState = s;
+			
+			//TimeDelay
+			
+			_gui.update();
+		}
 	}
 }

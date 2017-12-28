@@ -1,11 +1,37 @@
 package code;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 
 public class State{
 	
 	private int[][] _board;
 	private int _size;
+	
+	
+	public static State generateRandomState(int dim){
+		ArrayList<Integer> vals = new ArrayList<Integer>();
+		for(int i = 0; i < dim*dim; ++i){
+			vals.add(i);
+		}
+		
+		State s = new State(dim);
+		
+		int[][] tmp = new int[dim][dim];
+		Random r = new Random();
+		for(int i = 0; i < dim; ++i){
+			for(int j = 0; j < dim; ++j){
+				int rand = r.nextInt(vals.size());
+				tmp[i][j] = vals.get(rand);
+				vals.remove(rand);
+			}
+		}
+		s.setBoard(tmp);
+		return s;
+	}
+	
+	
 	
 	public State(int m){
 		_board = new int[m][m];
@@ -18,16 +44,41 @@ public class State{
 	}
 	
 	
-	public State[] getChildren(){
+	
+	public ArrayList<State> getChildren(){
 		ArrayList<State> l = new ArrayList<State>();
+		State up = moveUp();
+		State down = moveDown();
+		State left = moveLeft();
+		State right = moveRight();
 		
-		l.add(moveUp());
-		l.add(moveDown());
-		l.add(moveLeft());
-		l.add(moveRight());
+		if(up != null){
+			l.add(up);
+		}
+		if(right != null){
+			
+			l.add(right);
+		}
+		if(left != null){
+			l.add(left);
+		}
+		if(down != null){
+			l.add(down);
+		}
+		return l;
+	}
+	
+	
+	public void print(){
+		String b = "";
 		
+		for(int i = 0; i < _size; ++i){
+			for(int j = 0; j < _size; ++j){
+				b += _board[i][j];
+			}
+		}
+		System.out.println(b);
 		
-		return (State[]) l.toArray();
 	}
 	
 	
@@ -65,7 +116,6 @@ public class State{
 		State newBoard = new State(_size);
 		
 		newBoard.setBoard(newBoardState);
-		
 		return newBoard;
 	}
 	
@@ -128,6 +178,7 @@ public class State{
 	    	}
 	    }
 	    return true;
+	    
 	}
 	
 	public int[][] getBoard(){
@@ -137,7 +188,7 @@ public class State{
 	public void setBoard(int[][] newBoard){
 		_board = newBoard;
 	}
-	
+
 	public int getSize(){
 		return _size;
 	}
